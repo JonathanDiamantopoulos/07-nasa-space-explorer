@@ -1,3 +1,14 @@
+:root {
+  --nasa-blue: #0b3d91;
+  --nasa-blue-dark: #061f4a;
+  --nasa-red: #dd361c;
+  --nasa-gray-dark: #323a45;
+  --nasa-gray-light: #d6d7d9;
+  --nasa-gray-lightest: #f1f1f1;
+  --nasa-white: #ffffff;
+  --nasa-shadow: rgba(6, 31, 74, 0.18);
+}
+
 /* Global reset & box sizing */
 * {
   box-sizing: border-box;
@@ -7,8 +18,9 @@
 
 /* Base page styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f1f1f1;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg, #f8fafd 0%, var(--nasa-gray-lightest) 100%);
+  color: var(--nasa-gray-dark);
   padding: 20px;
 }
 
@@ -29,9 +41,10 @@ body {
 }
 
 h1 {
-  font-family: Verdana, sans-serif;
+  font-family: "Arial Black", "Segoe UI", sans-serif;
   font-weight: bold;
-  color: #212121;
+  color: var(--nasa-blue-dark);
+  letter-spacing: 0.02em;
 }
 
 /* Logo */
@@ -40,7 +53,7 @@ h1 {
   margin-right: 15px;
 }
 
-/* Date‐picker & button row */
+/* Date-picker & button row */
 .filters {
   display: flex;
   flex-direction: column;
@@ -53,12 +66,12 @@ h1 {
 /* Inputs and buttons */
 input[type="date"],
 button {
-  font-family: Arial, sans-serif;
-  font-weight: normal;
-  color: #666;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-weight: 600;
+  color: var(--nasa-gray-dark);
   padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid var(--nasa-gray-light);
+  border-radius: 6px;
   font-size: 16px;
   line-height: 1.4;
   width: 100%;
@@ -66,12 +79,14 @@ button {
 
 /* Button specific */
 button {
-  background-color: #d3d3d3;
-  color: black;
+  background-color: var(--nasa-blue);
+  color: var(--nasa-white);
+  border-color: var(--nasa-blue);
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 button:hover {
-  background-color: #bfbfbf;
+  background-color: var(--nasa-blue-dark);
 }
 
 /* Stack horizontally on wider screens */
@@ -101,10 +116,11 @@ button:hover {
   flex: 1 1 100%;
   min-width: 280px;
   max-width: 500px;
-  background: white;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: var(--nasa-white);
+  padding: 12px 12px 16px;
+  border: 1px solid #dfe8f8;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px var(--nasa-shadow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -115,7 +131,7 @@ button:hover {
 .gallery-item:hover,
 .gallery-item:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 18px rgba(11, 61, 145, 0.12);
 }
 
 /* Three columns on wider screens */
@@ -127,20 +143,22 @@ button:hover {
 
 .gallery-item img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .gallery-item h2 {
   font-size: 1.1rem;
   margin-bottom: 8px;
+  color: var(--nasa-blue-dark);
 }
 
 .image-date {
   font-size: 0.9rem;
-  color: #4a4a4a;
+  color: var(--nasa-gray-dark);
   margin-bottom: 10px;
+  font-weight: 600;
 }
 
 .gallery-item p {
@@ -154,7 +172,7 @@ button:hover {
   flex: 1 1 100%;
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--nasa-gray-dark);
 }
 
 .placeholder-icon {
@@ -178,7 +196,7 @@ button:hover {
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(6, 31, 74, 0.7);
 }
 
 .modal-content {
@@ -188,9 +206,10 @@ button:hover {
   width: min(90vw, 900px);
   max-height: 90vh;
   overflow: auto;
-  background: #fff;
+  background: var(--nasa-white);
+  border: 1px solid #dce4ef;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 30px var(--nasa-shadow);
   padding: 20px;
 }
 
@@ -198,14 +217,14 @@ button:hover {
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border: none;
   border-radius: 50%;
   font-size: 28px;
   line-height: 1;
-  background: rgba(0, 0, 0, 0.1);
-  color: #222;
+  background: rgba(11, 61, 145, 0.08);
+  color: var(--nasa-blue-dark);
 }
 
 .modal-image {
@@ -219,15 +238,18 @@ button:hover {
 
 .modal-body h2 {
   margin-bottom: 8px;
+  color: var(--nasa-blue-dark);
 }
 
 .modal-date {
   font-size: 0.95rem;
-  color: #555;
+  color: var(--nasa-gray-dark);
   margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .modal-explanation {
-  line-height: 1.6;
-  color: #222;
+  line-height: 1.7;
+  color: var(--nasa-gray-dark);
+  white-space: pre-wrap;
 }

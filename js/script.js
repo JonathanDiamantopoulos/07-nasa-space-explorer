@@ -51,13 +51,23 @@ function formatDisplayDate(dateString) {
 	}).format(date);
 }
 
+function stripHtmlTags(value) {
+	if (!value) {
+		return '';
+	}
+
+	const tempElement = document.createElement('div');
+	tempElement.innerHTML = value;
+	return tempElement.textContent.replace(/\s+/g, ' ').trim();
+}
+
 function openModal(image) {
 	const imageUrl = image.hdurl || image.url || '';
 	modalImage.src = imageUrl;
 	modalImage.alt = image.title;
 	modalTitle.textContent = image.title;
 	modalDate.textContent = formatDisplayDate(image.date);
-	modalExplanation.textContent = image.explanation;
+	modalExplanation.textContent = stripHtmlTags(image.explanation);
 	modal.classList.remove('hidden');
 }
 
@@ -110,7 +120,7 @@ async function getSpaceImages() {
 	});
 	const apiUrl = `https://science.nasa.gov/wp-json/wp/v2/apod-basic?${searchParams}`;
 
-	gallery.textContent = 'Loading space images...';
+	gallery.textContent = '🔄 Loading space images...';
 	getImagesButton.disabled = true;
 
 	try {

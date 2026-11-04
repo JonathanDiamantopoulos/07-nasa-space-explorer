@@ -98,7 +98,7 @@ button:hover {
 
 /* Gallery items */
 .gallery-item {
-  flex: 1 1 100%;  /* full width by default */
+  flex: 1 1 100%;
   min-width: 280px;
   max-width: 500px;
   background: white;
@@ -108,6 +108,14 @@ button:hover {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-item:hover,
+.gallery-item:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 /* Three columns on wider screens */
@@ -122,6 +130,17 @@ button:hover {
   height: 200px;
   object-fit: cover;
   border-radius: 4px;
+}
+
+.gallery-item h2 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.image-date {
+  font-size: 0.9rem;
+  color: #4a4a4a;
+  margin-bottom: 10px;
 }
 
 .gallery-item p {
@@ -141,4 +160,74 @@ button:hover {
 .placeholder-icon {
   font-size: 48px;
   margin-bottom: 20px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  width: min(90vw, 900px);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  font-size: 28px;
+  line-height: 1;
+  background: rgba(0, 0, 0, 0.1);
+  color: #222;
+}
+
+.modal-image {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.modal-body h2 {
+  margin-bottom: 8px;
+}
+
+.modal-date {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.modal-explanation {
+  line-height: 1.6;
+  color: #222;
 }

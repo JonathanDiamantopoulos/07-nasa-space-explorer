@@ -148,6 +148,40 @@ button:hover {
   border-radius: 6px;
 }
 
+.gallery-item--video {
+  cursor: default;
+}
+
+.video-link {
+  align-self: center;
+  margin-bottom: 12px;
+  padding: 10px 16px;
+  border: 2px solid var(--nasa-red);
+  border-radius: 6px;
+  background-color: var(--nasa-blue);
+  color: var(--nasa-white);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.video-link:hover {
+  background-color: var(--nasa-blue-dark);
+  transform: translateY(-1px);
+}
+
+.video-link:focus-visible {
+  outline: 3px solid var(--nasa-red);
+  outline-offset: 3px;
+}
+
+.gallery-item img.video-thumbnail {
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+}
+
 .gallery-item h2 {
   font-size: 1.1rem;
   margin-bottom: 8px;
@@ -211,20 +245,6 @@ button:hover {
   border-radius: 12px;
   box-shadow: 0 12px 30px var(--nasa-shadow);
   padding: 20px;
-}
-
-.modal-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 38px;
-  height: 38px;
-  border: none;
-  border-radius: 50%;
-  font-size: 28px;
-  line-height: 1;
-  background: rgba(11, 61, 145, 0.08);
-  color: var(--nasa-blue-dark);
 }
 
 .modal-image {

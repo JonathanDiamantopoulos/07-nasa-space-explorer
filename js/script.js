@@ -15,7 +15,6 @@ modal.setAttribute('aria-modal', 'true');
 modal.innerHTML = `
 	<div class="modal-backdrop" data-close="true"></div>
 	<div class="modal-content">
-		<button class="modal-close" type="button" aria-label="Close image details">×</button>
 		<img class="modal-image" src="" alt="" />
 		<div class="modal-body">
 			<h2 class="modal-title"></h2>
@@ -31,7 +30,6 @@ const modalImage = modal.querySelector('.modal-image');
 const modalTitle = modal.querySelector('.modal-title');
 const modalDate = modal.querySelector('.modal-date');
 const modalExplanation = modal.querySelector('.modal-explanation');
-const modalCloseButton = modal.querySelector('.modal-close');
 
 function formatDisplayDate(dateString) {
 	if (!dateString) {
@@ -62,7 +60,9 @@ function stripHtmlTags(value) {
 }
 
 function openModal(image) {
-	const imageUrl = image.hdurl || image.url || '';
+	const imageUrl = image.media_type === 'video'
+		? image.hdurl || image.thumbnail_url || ''
+		: image.hdurl || image.url || '';
 	modalImage.src = imageUrl;
 	modalImage.alt = image.title;
 	modalTitle.textContent = image.title;
@@ -80,7 +80,6 @@ function closeModal() {
 	modalExplanation.textContent = '';
 }
 
-modalCloseButton.addEventListener('click', closeModal);
 modal.addEventListener('click', (event) => {
 	if (event.target.dataset.close === 'true') {
 		closeModal();
@@ -116,6 +115,7 @@ async function getSpaceImages() {
 	const searchParams = new URLSearchParams({
 		start_date: startInput.value,
 		end_date: endInput.value,
+		thumbs: 'true',
 		api_key: apiKey
 	});
 	const apiUrl = `https://science.nasa.gov/wp-json/wp/v2/apod-basic?${searchParams}`;
@@ -168,13 +168,20 @@ async function getSpaceImages() {
 			card.setAttribute('tabindex', '0');
 			card.setAttribute('role', 'button');
 			card.setAttribute('aria-label', `Open details for ${image.title}`);
-			card.addEventListener('click', () => openModal(image));
+			card.addEventListener('click', (event) => {
+				if (!event.target.closest('a')) {
+					openModal(image);
+				}
+			});
 			card.addEventListener('keydown', (event) => {
-				if (event.key === 'Enter' || event.key === ' ') {
+				if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('a')) {
 					event.preventDefault();
 					openModal(image);
 				}
 			});
+			if (image.media_type !== 'image') {
+				card.classList.add('gallery-item--video');
+			}
 
 			const title = document.createElement('h2');
 			title.textContent = image.title;
@@ -192,11 +199,22 @@ async function getSpaceImages() {
 				card.appendChild(picture);
 			} else {
 				const videoLink = document.createElement('a');
+				videoLink.className = 'video-link';
 				videoLink.href = image.url;
-				videoLink.textContent = 'Watch this APOD video';
+				videoLink.textContent = 'Watch the NASA video';
 				videoLink.target = '_blank';
 				videoLink.rel = 'noopener noreferrer';
 				card.appendChild(videoLink);
+
+				const thumbnailUrl = image.thumbnail_url || image.hdurl;
+				if (thumbnailUrl) {
+					const thumbnail = document.createElement('img');
+					thumbnail.className = 'video-thumbnail';
+					thumbnail.src = thumbnailUrl;
+					thumbnail.alt = `${image.title} video thumbnail`;
+					thumbnail.loading = 'lazy';
+					card.appendChild(thumbnail);
+				}
 			}
 
 			gallery.appendChild(card);

@@ -267,10 +267,13 @@ async function getSpaceImages() {
 			title.textContent = image.title;
 			card.appendChild(title);
 
+			const metadata = document.createElement('div');
+			metadata.className = 'image-metadata';
+
 			const date = document.createElement('p');
 			date.className = 'image-date';
 			date.textContent = formatDisplayDate(image.date);
-			card.appendChild(date);
+			metadata.appendChild(date);
 
 			if (image.media_type === 'image') {
 				const picture = document.createElement('img');
@@ -284,7 +287,7 @@ async function getSpaceImages() {
 				videoLink.textContent = 'Watch the NASA video';
 				videoLink.target = '_blank';
 				videoLink.rel = 'noopener noreferrer';
-				card.appendChild(videoLink);
+				metadata.appendChild(videoLink);
 
 				const thumbnailUrl = image.thumbnail_url || image.hdurl;
 				if (thumbnailUrl) {
@@ -297,6 +300,7 @@ async function getSpaceImages() {
 				}
 			}
 
+			card.insertBefore(metadata, card.children[1]);
 			gallery.appendChild(card);
 		});
 	} catch (error) {

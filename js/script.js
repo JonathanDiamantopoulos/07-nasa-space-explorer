@@ -61,6 +61,19 @@ function formatDisplayDate(dateString) {
 	}).format(date);
 }
 
+function getDatesInRange(startDateString, endDateString) {
+	const dates = [];
+	const currentDate = new Date(`${startDateString}T00:00:00Z`);
+	const endDate = new Date(`${endDateString}T00:00:00Z`);
+
+	while (currentDate <= endDate) {
+		dates.push(currentDate.toISOString().split('T')[0]);
+		currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+	}
+
+	return dates;
+}
+
 function stripHtmlTags(value) {
 	if (!value) {
 		return '';
@@ -123,31 +136,86 @@ async function getSpaceImages() {
 		return;
 	}
 
-	// Use the NASA Science endpoint from the assignment screenshots.
+	const expectedDates = getDatesInRange(startInput.value, endInput.value);
+	if (expectedDates.length !== 9) {
+		gallery.textContent = 'Please choose a date range that includes exactly 9 days.';
+		return;
+	}
+
 	const searchParams = new URLSearchParams({
 		start_date: startInput.value,
 		end_date: endInput.value,
-		thumbs: 'true',
+		per_page: '25',
 		api_key: apiKey
 	});
-	const apiUrl = `https://science.nasa.gov/wp-json/wp/v2/apod-basic?${searchParams}`;
+	const apiUrl = 'https://science.nasa.gov/wp-json/wp/v2/apod-basic';
 
 	gallery.textContent = '🔄 Loading space images...';
 	getImagesButton.disabled = true;
 
 	try {
-		const response = await fetch(apiUrl);
-		const responseData = await response.json();
+		const today = new Date(`${new Date().toISOString().split('T')[0]}T00:00:00Z`);
+		const rangeEnd = new Date(`${endInput.value}T00:00:00Z`);
+		const daysPerPage = 25;
+		const millisecondsPerDay = 24 * 60 * 60 * 1000;
+		// Start near the page where the selected end date should appear.
+		let page = Math.floor((today.getTime() - rangeEnd.getTime()) / (daysPerPage * millisecondsPerDay)) + 1;
+		let totalPages = Infinity;
+		const pagesVisited = new Set();
+		const imagesByDate = new Map();
 
-		if (!response.ok) {
-			const apiError = responseData?.message || responseData?.error || responseData?.code;
-			throw new Error(apiError || `NASA API request failed with status ${response.status}.`);
+		// The endpoint returns the archive in pages, so check adjacent pages as needed.
+		while (imagesByDate.size < expectedDates.length && page >= 1 && page <= totalPages && !pagesVisited.has(page)) {
+			pagesVisited.add(page);
+			searchParams.set('page', String(page));
+
+			const response = await fetch(`${apiUrl}?${searchParams}`);
+			const responseData = await response.json();
+
+			if (!response.ok) {
+				const apiError = responseData?.message || responseData?.error || responseData?.code;
+				throw new Error(apiError || `NASA API request failed with status ${response.status}.`);
+			}
+
+			if (!Array.isArray(responseData)) {
+				throw new Error('NASA returned an unexpected response for the selected date range.');
+			}
+
+			const totalPagesHeader = response.headers.get('X-WP-TotalPages');
+			if (totalPagesHeader) {
+				totalPages = Number(totalPagesHeader);
+			}
+
+			const responseDates = responseData
+				.map((image) => image.date)
+				.filter(Boolean)
+				.sort();
+
+			responseData
+				.filter((image) => expectedDates.includes(image.date))
+				.forEach((image) => imagesByDate.set(image.date, image));
+
+			if (imagesByDate.size === expectedDates.length || !responseDates.length) {
+				break;
+			}
+
+			const missingDates = expectedDates.filter((date) => !imagesByDate.has(date));
+			const oldestDate = responseDates[0];
+			const newestDate = responseDates[responseDates.length - 1];
+
+			if (missingDates.some((date) => date < oldestDate)) {
+				page += 1;
+			} else if (missingDates.some((date) => date > newestDate)) {
+				page -= 1;
+			} else {
+				break;
+			}
 		}
 
-		const images = Array.isArray(responseData) ? responseData : [responseData].filter(Boolean);
+		const images = expectedDates.map((date) => imagesByDate.get(date)).filter(Boolean);
 
-		if (!images.length) {
-			throw new Error('NASA returned no images for the selected date range.');
+		if (images.length !== expectedDates.length) {
+			throw new Error(`NASA returned ${images.length} of 9 images for the selected date range.`);
 		}
 
 		console.log('NASA APOD response', {

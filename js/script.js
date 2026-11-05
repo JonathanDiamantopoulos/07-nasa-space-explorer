@@ -3,6 +3,18 @@ const startInput = document.getElementById('startDate');
 const endInput = document.getElementById('endDate');
 const getImagesButton = document.getElementById('getImagesButton');
 const gallery = document.getElementById('gallery');
+const spaceFact = document.getElementById('spaceFact');
+
+const spaceFacts = [
+	'One day on Venus is longer than one year on Venus.',
+	'Neutron stars can spin around 600 times per second.',
+	'The footprints left by Apollo astronauts on the Moon can last for millions of years.',
+	'Jupiter has the shortest day of all the planets in our Solar System, lasting about 10 hours.',
+	'Sunlight takes about 8 minutes and 20 seconds to reach Earth.',
+	'There are more stars in the observable universe than grains of sand on all of Earth\'s beaches.'
+];
+
+spaceFact.textContent = spaceFacts[Math.floor(Math.random() * spaceFacts.length)];
 
 // The local apiKey.js file is ignored by Git so your key is not pushed.
 const apiKey = window.NASA_API_KEY || 'DEMO_KEY';
